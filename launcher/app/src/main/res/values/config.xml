@@ -32,7 +32,7 @@
     <!-- Apps never shown as tiles (e.g. the Live TV app, which the Inputs menu already covers). -->
     <string-array name="hidden_apps">
         <item>com.spocky.projengmenu</item>
-        <item>nl.rogro82.pipup</item>
+        <item>io.github.gwiersma.pipup</item>
     </string-array>
 
     <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu. Leave empty to omit. -->
