@@ -21,3 +21,7 @@ bench-results/
 *.aab
 launcher/hs_err_pid*.log
 launcher/replay_pid*.log
+
+# Local: one TV owner's notes and scripts (own private repo), and the generated install helper
+my-tv/
+launcher/install-only.sh

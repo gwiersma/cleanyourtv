@@ -17,10 +17,12 @@
 
     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
     <string-array name="dock_apps">
+        <item>com.tmobile.tv.nl</item>
+        <item>org.jellyfin.androidtv</item>
         <item>com.netflix.ninja</item>
-        <item>com.amazon.amazonvideo.livingroom</item>
-        <item>com.google.android.youtube.tv</item>
-        <item>in.startv.hotstar</item>
+        <item>nl.rtl.videoland.v2</item>
+        <item>com.disney.disneyplus</item>
+        <item>nl.uitzendinggemist</item>
     </string-array>
     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
          the first grid apps, so the dock never shows a gap. false leaves them empty (#162); a theme can
@@ -29,12 +31,12 @@
 
     <!-- Apps never shown as tiles (e.g. the Live TV app, which the Inputs menu already covers). -->
     <string-array name="hidden_apps">
-        <item>com.mediatek.wwtv.tvcenter</item>
-        <item>com.mitv.gallery</item>
+        <item>com.spocky.projengmenu</item>
+        <item>nl.rogro82.pipup</item>
     </string-array>
 
     <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu. Leave empty to omit. -->
-    <string name="live_tv_package" translatable="false">com.mediatek.wwtv.tvcenter</string>
+    <string name="live_tv_package" translatable="false"></string>
 
     <!-- Open the Live TV app above the first time Home comes up after the TV is switched on, for sets that are
          mostly used for broadcast TV. Once per boot: Home after that stays Home. Can also be set with
@@ -157,6 +159,7 @@
          a temporary `Log.d` in the helper's `onKeyEvent`: `getKeyCode()`, `getScanCode()`, `getDeviceId()`, read
          after a HOME_KEY_SERVICE=1 rebuild. Leave empty to omit. -->
     <integer-array name="settings_key_keycodes">
+        <item>83</item>
     </integer-array>
     <!-- What those Settings buttons open: false, the TV's Settings; true, a small glass panel at the top right
          with TV settings, Display, Network, Apps (re-enable an app) and Launcher settings, over whatever is on screen.
@@ -167,7 +170,7 @@
          off the enabled list. true: Home puts the helpers that were running back when it starts; one turned off in
          Settings stays off. Needs WRITE_SECURE_SETTINGS, which build-and-install grants with RESTORE_KEY_SERVICES=1
          (-RestoreKeyServices on Windows). Can also be set with "restore_key_services": true in a theme's config.json. -->
-    <bool name="restore_key_services">false</bool>
+    <bool name="restore_key_services">true</bool>
 
     <!-- More remote buttons that open the input switcher, by Android keycode (INPUT_KEY_SERVICE=1
          build-and-install.sh; KEYCODE_TV always does). For buttons only a disabled app answered: the Xiaomi
@@ -209,6 +212,8 @@
          where the firmware hands KEYCODE_GUIDE (172) to the stock launcher and no app ever receives it. Leave empty
          to omit. -->
     <string-array name="app_keys" translatable="false">
+        <item>KEYCODE_GUIDE:com.tmobile.tv.nl</item>
+        <item>KEYCODE_F8:org.jellyfin.androidtv</item>
     </string-array>
 
     <!-- Package of the stock launcher, for TVs whose firmware turns it back on after it was disabled. XGIMI's
@@ -330,7 +335,7 @@
 
     <!-- The Wi-Fi/Ethernet pill in the top bar. false hides it (on Android 14 with Location off it can
          only say "Wi-Fi", not the network name). Can also be set with "show_network_pill" in a theme. -->
-    <bool name="show_network_pill">true</bool>
+    <bool name="show_network_pill">false</bool>
     <!-- Apps shown as round buttons with their own logo in the top bar, left of the network pill, in this order.
          They leave the grid. Missing apps are skipped. Can also be set with "top_bar_apps" in a theme. -->
     <string-array name="top_bar_apps" translatable="false">
@@ -376,7 +381,7 @@
 
     <!-- Tiles per row in the grid; the dock always has this many slots. Tiles are 180dp wide at 4 columns and
          shrink to fit from 5 up (about 144dp at 5, 117dp at 6 on a 1080p TV). -->
-    <integer name="columns">4</integer>
+    <integer name="columns">6</integer>
 
     <!-- Basic motion is on; advanced effects are opt-in in the launcher's own Settings screen. -->
     <bool name="animations">true</bool>
@@ -435,14 +440,13 @@
 
     <!-- One line under the clock: CPU, free memory and free storage. Off by default; a theme can set
          "show_stats": true. Nothing is read, and the clock does not move, while this is false. -->
-    <bool name="show_stats">false</bool>
+    <bool name="show_stats">true</bool>
 
     <!-- A Continue watching row above the dock, from the system's Watch Next table (docs/watch-next.md). Read once
          each time Home comes back, never polled. Needs READ_TV_LISTINGS, which build-and-install grants. Only
          local posters are shown (Jellyfin's, for one); rows whose poster is a web address get the app's own
-         banner instead, so Home makes no network request. Hidden on a screen with no room above the dock.
-         Off by default. -->
-    <bool name="continue_watching">false</bool>
+         banner instead, so Home makes no network request. Hidden on a screen with no room above the dock. -->
+    <bool name="continue_watching">true</bool>
 
     <!-- Each team's next game in the F1 panel's place under the clock, rotating with the theme's F1 weekend: the package
          of an add-on that publishes them (the Game Day add-on: io.github.justinnewman.gameday; contract in docs/modules.md).
@@ -454,12 +458,12 @@
          horizon glow around sunrise and sunset. 0 keeps the plain background (the default); 1 to 100
          sets its opacity. Around 60 reads clearly without hiding a wallpaper. Can also be set with
          "sky_intensity": 60 in a theme's config.json. -->
-    <integer name="sky_intensity">0</integer>
+    <integer name="sky_intensity">60</integer>
     <!-- Where the TV is, in decimal degrees, so the sky's sunrise and sunset glows follow the real sun
          (computed on the TV, no network). Empty: a fixed temperate day, sunset glow around 19:00.
          Vilnius: 54.69 and 25.28. -->
-    <string name="latitude" translatable="false"></string>
-    <string name="longitude" translatable="false"></string>
+    <string name="latitude" translatable="false">52.1</string>
+    <string name="longitude" translatable="false">5.1</string>
 
     <!-- Cinematic top shelf: the focused dock app's artwork, softened, fills the top of the screen in its
          colour; the shelf gets a larger name, a "Last opened" line (from the apps Home opened) and dock position
