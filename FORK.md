@@ -26,7 +26,7 @@ A fork of [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv) whose 
 - One new permission, `READ_TV_LISTINGS`, granted by `launcher/build-and-install.sh` (`pm grant`). Without it
   the query fails and the row stays hidden.
 - The switch is `continue_watching` in `config.xml`, off in the feature commit
-  ([575f567](https://github.com/gwiersma/cleanyourtv/commit/575f5671)); the next commit is this fork's own box
+  ([d723b1f](https://github.com/gwiersma/cleanyourtv/commit/d723b1f9)); the next commit is this fork's own box
   config. Notes on the table itself are in [`docs/watch-next.md`](docs/watch-next.md#in-the-launcher).
 
 ## Building
