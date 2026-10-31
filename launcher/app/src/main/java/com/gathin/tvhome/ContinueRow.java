@@ -72,9 +72,10 @@ final class ContinueRow extends LinearLayout {
         TextView title = new TextView(context);
         title.setText(caption);
         title.setAllCaps(true);
-        title.setLetterSpacing(0.25f);
-        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        title.setTextColor(0xB3FFFFFF);
+        // The greeting's style (activity_main.xml), so the two caps lines read as one family.
+        title.setLetterSpacing(0.22f);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        title.setTextColor(0x8CFFFFFF);
         title.setTypeface(UiFont.get(context, R.string.font_medium));
         LayoutParams tlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tlp.setMarginStart(dp(12));
@@ -208,7 +209,7 @@ final class ContinueRow extends LinearLayout {
         card.setId(View.generateViewId());
         card.setFocusable(true);
         card.setClickable(true);
-        card.setContentDescription(item.title);
+        card.setContentDescription(appLabel(item.pkg) + ": " + item.title);
         GradientDrawable bg = new GradientDrawable();
         bg.setColor(0xFF1E2433);
         bg.setCornerRadius(dp(12));
@@ -250,6 +251,25 @@ final class ContinueRow extends LinearLayout {
         if (!item.subtitle.isEmpty()) text.addView(label(item.subtitle, 11, 0xB3FFFFFF, R.string.font_regular));
         card.addView(text, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
+
+        // Which app the row came from, as Google TV shows it: the app's icon in the top corner.
+        Drawable icon = icon(item.pkg);
+        if (icon != null) {
+            ImageView badge = new ImageView(ctx);
+            badge.setImageDrawable(icon);
+            badge.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            badge.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), dp(6));
+                }
+            });
+            badge.setClipToOutline(true);
+            badge.setElevation(dp(2));
+            FrameLayout.LayoutParams ilp = new FrameLayout.LayoutParams(dp(26), dp(26), Gravity.TOP | Gravity.START);
+            ilp.setMargins(dp(8), dp(8), 0, 0);
+            card.addView(badge, ilp);
+        }
 
         if (item.progress >= 0) {
             View track = new View(ctx);
@@ -330,6 +350,23 @@ final class ContinueRow extends LinearLayout {
             return d != null ? d : pm.getApplicationIcon(pkg);
         } catch (PackageManager.NameNotFoundException e) {
             return null;
+        }
+    }
+
+    private Drawable icon(String pkg) {
+        try {
+            return getContext().getPackageManager().getApplicationIcon(pkg);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
+    private String appLabel(String pkg) {
+        PackageManager pm = getContext().getPackageManager();
+        try {
+            return String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)));
+        } catch (PackageManager.NameNotFoundException e) {
+            return pkg;
         }
     }
 

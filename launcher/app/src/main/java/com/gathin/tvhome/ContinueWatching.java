@@ -87,7 +87,6 @@ final class ContinueWatching {
                 if (engaged > 0 && now - engaged > MAX_AGE_MS) continue;
                 String title = str(c, TvContract.WatchNextPrograms.COLUMN_TITLE);
                 if (title == null || title.isEmpty()) continue;
-                if (!seen.add(pkg + '\n' + title)) continue;   // one card per show
                 if (pm.getLeanbackLaunchIntentForPackage(pkg) == null && pm.getLaunchIntentForPackage(pkg) == null) continue;
 
                 long pos = lng(c, TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS, 0);
@@ -110,11 +109,14 @@ final class ContinueWatching {
             return new ArrayList<>();
         }
         Log.i(TAG, "Watch Next rows per app: " + perPackage + ", shown: " + Math.min(items.size(), MAX_ITEMS));
+        // Newest first, then one card per show: the newest row of it. Deduplicating in table order kept the
+        // oldest one instead (RaiPlay's daily series showed its episode from 50 days ago, out of order).
         Collections.sort(order, (a, b) -> Long.compare(b[0], a[0]));
         List<Item> sorted = new ArrayList<>();
         for (long[] o : order) {
             if (sorted.size() == MAX_ITEMS) break;
-            sorted.add(items.get((int) o[1]));
+            Item item = items.get((int) o[1]);
+            if (seen.add(item.pkg + '\n' + item.title)) sorted.add(item);
         }
         return sorted;
     }
