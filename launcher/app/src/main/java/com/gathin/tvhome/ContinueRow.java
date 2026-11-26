@@ -80,7 +80,18 @@ final class ContinueRow extends LinearLayout {
         tlp.setMarginStart(dp(12));
         addView(title, tlp);
 
-        scroller = new HorizontalScrollView(context);
+        // Room for the focused card's zoom on every side, so the scroller does not clip it.
+        int pad = dp(12);
+        scroller = new HorizontalScrollView(context) {
+            @Override
+            protected int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect rect) {
+                // Scroll to the card plus that room: back on the first card the row used to stop with the card
+                // flush against its edge, and the zoom was cut off.
+                android.graphics.Rect withRoom = new android.graphics.Rect(rect);
+                withRoom.inset(-pad, 0);
+                return super.computeScrollDeltaToGetChildRectOnScreen(withRoom);
+            }
+        };
         scroller.setHorizontalScrollBarEnabled(false);
         scroller.setOverScrollMode(OVER_SCROLL_NEVER);
         scroller.setClipChildren(false);
@@ -90,8 +101,6 @@ final class ContinueRow extends LinearLayout {
         cards.setOrientation(HORIZONTAL);
         cards.setClipChildren(false);
         cards.setClipToPadding(false);
-        // Room for the focused card's zoom on every side, so the scroller does not clip it.
-        int pad = dp(12);
         cards.setPadding(pad, pad, pad, pad);
         scroller.addView(cards, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         addView(scroller, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -299,10 +308,16 @@ final class ContinueRow extends LinearLayout {
                     v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     host.onRowDown();
                     return true;
+                // The scroller moves the focus itself and, unlike Android's own focus search in the grid, without
+                // a click; so click here, as Up and Down do.
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    return index == 0;                        // the row's start: stay put
+                    if (index == 0) return true;              // the row's start: stay put
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
+                    return false;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    return index == cardViews.size() - 1;     // the row's end: stay put
+                    if (index == cardViews.size() - 1) return true;   // the row's end: stay put
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
+                    return false;
                 default:
                     return false;
             }
